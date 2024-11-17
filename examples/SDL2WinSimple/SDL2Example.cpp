@@ -90,18 +90,17 @@ void SDL2Example::render()
 
 	SDL_RenderClear(renderer);
 
-	std::list<Tile*>::iterator i;
-	for (i = hexMap->loadedTiles.begin(); i !=  hexMap->loadedTiles.end(); ++i){
-		std::pair<int, int> XY = hexMap->rqTOxy(((Tile*)(*i))->r, ((Tile*)(*i))->q);
+	for (Tile* tile : this->hexMap->loadedTiles){
+		std::pair<int, int> XY = hexMap->rqTOxy(tile->r, tile->q);
 		std::pair<int, int> HW = hexMap->getTileDimentions();
 		SDL_Rect frame;
 		frame.x = XY.first;
 		frame.y = XY.second;
 		frame.w = HW.first;
 		frame.h = HW.second;
-		SDL_SetTextureColorMod(textureMap[((Tile*)(*i))->texture], ((Tile*)(*i))->textureColor[0],((Tile*)(*i))->textureColor[1], ((Tile*)(*i))->textureColor[2]);
-		SDL_RenderCopy(renderer, textureMap[((Tile*)(*i))->texture], NULL, &frame);
-		SDL_SetTextureColorMod(textureMap[((Tile*)(*i))->texture], 255, 255, 255);
+		SDL_SetTextureColorMod(textureMap[tile->texture], tile->textureColor[0],tile->textureColor[1], tile->textureColor[2]);
+		SDL_RenderCopy(renderer, textureMap[tile->texture], NULL, &frame);
+		SDL_SetTextureColorMod(textureMap[tile->texture], 255, 255, 255);
 	}
 
 	SDL_RenderPresent(renderer);
@@ -109,7 +108,7 @@ void SDL2Example::render()
 
 Tile* SDL2Example::getTileAtXY(int x, int y) {
 	for (std::list<Tile*>::reverse_iterator i = hexMap->loadedTiles.rbegin(); i != hexMap->loadedTiles.rend(); ++i)
-		if (hexMap->isPointWithinTile(x,y,((Tile*)(*i))))
-			return ((Tile*)(*i));
+		if (hexMap->isPointWithinTile(x,y,*i))
+			return *i;
 	return NULL;
 }
