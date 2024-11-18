@@ -31,13 +31,9 @@ void HexMap::loadAround(int rc, int qc, int radius){
 
 
 void HexMap::unloadAround(int rc, int qc, int radius){
-    std::list<Tile*>::iterator i = loadedTiles.begin();
-    while (i != loadedTiles.end())
-    {
-    if (axialDistance(rc, qc, ((Tile*)(*i))->r, ((Tile*)(*i))->q) > radius)
-        deleteTile((Tile*)(*(i++)));
-    else
-        ++i;
+    for(Tile* tile : loadedTiles){
+        if (axialDistance(rc, qc, tile->r, tile->q) > radius)
+            deleteTile(tile);
     }
 }
 
@@ -49,11 +45,9 @@ void HexMap::clearMap(){
 }
 
 Tile* HexMap::getTileAtRQ(int r, int q){
-    std::list<Tile*>::iterator i = loadedTiles.begin();
-    while (i != loadedTiles.end()){
-        if (r == ((Tile*)(*i))->r && q == ((Tile*)(*i))->q)
-            return (Tile*)(*i);
-        ++i;
+    for(Tile* tile : loadedTiles){
+        if (r == tile->r && q ==  tile->q)
+            return tile;
     }
     return NULL;
 }
@@ -121,8 +115,8 @@ void HexMap::sortTileList() {
 }
 
 bool HexMap::isTileLoaded(int r, int q){
-    for (std::list<Tile*>::iterator i = loadedTiles.begin(); i != loadedTiles.end(); ++i)
-        if(((Tile*)(*i))->r == r && ((Tile*)(*i))->q == q)
+    for (Tile* tile : this->loadedTiles)
+        if(tile->r == r && tile->q == q)
             return true;
     return false;
 }
