@@ -11,13 +11,20 @@ SDL2Example::~SDL2Example() {
 
 void SDL2Example::initWindow()
 {
-	window = SDL_CreateWindow( "SDL2 Hex Map Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowWidth, windowHeight, SDL_WINDOW_ALLOW_HIGHDPI);
+	window = SDL_CreateWindow( "SDL2 Hex Map Example with heights", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowWidth, windowHeight, SDL_WINDOW_ALLOW_HIGHDPI);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-	textureMap["flat"] = IMG_LoadTexture(renderer, "../../assets/hexagonFlat.png");
+	
 	textureMap["pointy"] = IMG_LoadTexture(renderer, "../../assets/hexagonPointy.png");
-
-	hexMap->loadAround(0, 0, 5);
+	
+	hexMap->Hscale = 0.5;
+	hexMap->loadAround(0, 0, 4);
+	hexMap->getTileAtRQ(0,0)->h = 1;
+	hexMap->getTileAtRQ(0,1)->h = 2;
+	hexMap->getTileAtRQ(0,-1)->h = -1;
+	hexMap->getTileAtRQ(2,2)->h = -1;
+	hexMap->getTileAtRQ(2,-1)->h = -1;
+	hexMap->getTileAtRQ(-2,-2)->h = 2;
+	hexMap->getTileAtRQ(-3,3)->h = 2;
 	
 	hexMap->sortTileList();
 
@@ -29,13 +36,11 @@ void SDL2Example::initVars()
 	windowHeight = 720;
 	windowWidth = 1280;
 	tileTargetedByMouse = NULL;
-	hexMap = new HexMap(785, 3140, true);
-	//hexMap = new HexMap(785, 3140, false); //set hexmap.mapMode to false if you want hexagons to be pointy at the top
-	hexMap->deafultTexture = "flat";
-	//hexMap->deafultTexture = "pointy"; //set hexmap.deafultTexture to appropriate texture if you want hexagons to be pointy at the top
+	hexMap = new HexMap(785, 3140, false);
 	hexMap->offsetX = windowWidth/2;
 	hexMap->offsetY = windowHeight/2;
 	hexMap->scale = 0.1;
+	hexMap->deafultTexture = "pointy";
 }
 
 void SDL2Example::update()
@@ -92,7 +97,7 @@ void SDL2Example::render()
 	SDL_RenderClear(renderer);
 
 	for (Tile* tile : this->hexMap->loadedTiles){
-		std::pair<int, int> XY = hexMap->rqTOxy(tile->r, tile->q);
+		std::pair<int, int> XY = hexMap->rqTOxy(tile->r, tile->q, tile->h);
 		std::pair<int, int> HW = hexMap->getTileDimentions();
 		SDL_Rect frame;
 		frame.x = XY.first;
