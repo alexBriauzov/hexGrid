@@ -53,7 +53,19 @@ Tile* HexMap::getTileAtRQ(int r, int q){
 }
 
 std::pair<int, int> HexMap::rqTOxy(int r, int q) {
-	return std::pair(scale*size*(3. / 2 * q) + offsetX, scale*size * (sqrt3 / 2 * q + sqrt3 * r) + offsetY);
+    if(mapMode){
+	    return std::pair(scale*size*(3. / 2 * q) + offsetX, scale*size * (sqrt3 / 2 * q + sqrt3 * r) + offsetY);
+    } else {
+        return std::pair(scale*size*(sqrt3 * q + sqrt3/2 * r) + offsetX, scale*size * (3. / 2  * r) + offsetY);
+    }
+}
+
+std::pair<int, int> HexMap::rqTOxy(int r, int q, int h) {
+    if(mapMode){
+	return std::pair(scale*size*(3. / 2 * q) + offsetX, scale*size * (sqrt3 / 2 * q + sqrt3 * (r - h*Hscale)) + offsetY);
+    } else {
+        return std::pair(scale*size*(sqrt3 * q + sqrt3/2 * r) + offsetX, scale*size * (3. / 2  * (r - h*Hscale)) + offsetY);
+    }
 }
 
 std::pair<int, int> HexMap::getTileDimentions() {
@@ -61,7 +73,7 @@ std::pair<int, int> HexMap::getTileDimentions() {
 }
 
 bool HexMap::isPointWithinTile(int x, int y, Tile* tile) {
-    std::pair<int, int> pos = rqTOxy(tile->r, tile->q);
+    std::pair<int, int> pos = rqTOxy(tile->r, tile->q, tile->h);
 
 	if (x < pos.first || x > pos.first + width*scale)
 		return false;
@@ -80,6 +92,8 @@ bool HexMap::isPointWithinTile(int x, int y, Tile* tile) {
 
 
 
+
+
 Tile* HexMap::spawnTile(int r, int q){
     Tile* tile = new Tile(r, q, determineTextureAt(r,q));
     loadedTiles.push_back(tile);
@@ -95,7 +109,6 @@ bool HexMap::deleteTile(Tile* tile){
 }
 
 void HexMap::sortTileList() {
-    if(mapMode){
 	loadedTiles.sort([](Tile* lhs, Tile* rhs) {
 		    return (
 				    lhs->r < rhs->r
@@ -103,15 +116,6 @@ void HexMap::sortTileList() {
 				    (lhs->r == rhs->r && lhs->q < rhs->q)
 			);
 	    });
-    } else {
-        loadedTiles.sort([](Tile* lhs, Tile* rhs) {
-		    return (
-				    lhs->q < rhs->q
-				    || 
-				    (lhs->q == rhs->q && lhs->r < rhs->r)
-			);
-	    });
-    }
 }
 
 bool HexMap::isTileLoaded(int r, int q){

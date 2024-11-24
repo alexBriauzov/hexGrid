@@ -44,6 +44,9 @@ public:
     // Axial coordinate to screen XY coordinate translation for this map
     std::pair<int, int> rqTOxy(int r, int q);
 
+    // Axial coordinate + h modifier to screen XY coordinate translation for this map
+    std::pair<int, int> rqTOxy(int r, int q, int h);
+
     // Returns the scaled tile width and height
     std::pair<int, int> getTileDimentions();
 
@@ -51,6 +54,9 @@ public:
 
     //set the size of the tiles (1 = pixel to pixel, 0.5 = half-size and so on...)
     double scale = 1;
+
+    //height modifier scale (tiles are shifted vertically in such a way, that for rqTOxy r = r - h*Hscale) ((remember to use rqTOxy(int r, int q, int h)))
+    double Hscale = 0.5;
     
     // The offset from top left of the screen to map (0,0)
     // For example if offsetX = screenWidth/2, offsetY = screenHeight/2 then Tile(0,0) is located at the center of the screen
