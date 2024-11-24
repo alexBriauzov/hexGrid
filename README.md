@@ -12,6 +12,7 @@ Rendering examples are created using SDL2, but core features are designed to wor
 
 ## Tile
 ![](https://github.com/alexBriauzov/hexGrid/blob/main/github/tilecoord.gif)
+![](https://github.com/alexBriauzov/hexGrid/blob/main/github/tilesHeights.jpg) 
 - q, r - position of a tile in axial coordinates
 - h - vertical offset of a tile
 - onLClick(), onRClick() - pointers to functions that will be called whenever a tile is clicked
